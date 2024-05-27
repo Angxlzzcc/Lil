@@ -1,0 +1,544 @@
+getgenv().Looten = {
+  ['StartUP'] = {
+      Key = 'LuarmorKey', -- replace with luarmor key
+      UWP_Optimize = true,
+      UnlockFPS = true,
+      Intro = true
+  },
+  ['Silent'] = {
+      Normal = {
+          Enabled = true,
+          HitChance = 300,
+      },
+      KeyBind = {
+          Enabled = true,
+          KeyBind = 't',
+          Notification = true,
+      },
+      HitPart = {
+          NearestPoint = true,
+          HitPart = 'HumanoidRootPart',
+      },
+      Prediction = {
+          Enabled = true,
+          AutoMated = false, -- auto prediction
+          Prediction = 0.125,
+      },
+  },
+  ['CamLock'] = {
+      Normal = {
+          Enabled = true,
+          ThirdPerson = true,
+          FirstPerson = true,
+      },
+      KeyBind = {
+          Hold = false,
+          Mode = 'KeyBind', -- or "Mouse"
+          KeyBind = 'q',
+          MouseBind = Enum.UserInputType.MouseButton2,
+      },
+      Prediction = {
+          Enabled = true,
+          Prediction = 0.115,
+      },
+      Style = {
+          First = 'Elastic',
+          Second = 'Sine'
+      },
+      Smoothness = {
+          Enabled = true,
+          Smoothness = 0.038,
+          AirShot = 0.037,
+      },
+      Shake = {
+          Enabled = false,
+          DirectionX = 8,
+          DirectionY = 6,
+          DirectionZ = 7,
+      },
+      HitPart = {
+          NearestPoint = true,
+          AirShot = true,
+          Part = 'HumanoidRootPart',
+          AirPart = 'HumanoidRootPart',
+      },
+      AutoUnLock = {
+          Reloading = true,
+          Typing = true,
+      },
+  },
+  ['Fov'] = {
+      CamLock = {
+          Show = false,
+          Use_Radius = false,
+          Radius = 160,
+          Model = 'Circle'
+      },
+      SilentAim = {
+          Show = false,
+          Use_Radius = true,
+          Radius = 10,
+          Model = 'Circle'
+      },
+  },
+  ['Adjustment'] = {
+    ['Checks'] = {
+          Resolver = true,
+          Anti_Aim_Viewer = true,
+          Wall_Check = true,
+          Disable_Ground_Shots = true,
+          Crew_Check = false,
+          Knocked_Check = true,
+          AntiCurve = true,
+          NoGroundShots = true,
+      },
+      ['Gun_Fov'] = {
+          Enabled = false,
+          DoubleBarrel = 22.5,
+          Revolver = 27.5,
+          Shotgun = 35,
+          TacticalShotgun = 35,
+          Smg = 25,
+          Silencer = 32.5
+      },
+      ['Macro'] = {
+          Enabled = true,
+          Hold_Key = true,
+          KeyBind = Enum.KeyCode.X,
+          Mode = '1' -- 1 = ioio 2 = scroll
+      },
+      ['TriggerBot'] = {
+          Enabled = false,
+          Delay = 0.1,
+              KeyBinds = {
+                  Enabled = true,
+                  Notifications = true,
+                  KeyBind = 't',
+          },
+      },
+      ['Memory'] = {
+          Enable = true,
+          Start = 971,
+          End = 984,
+          Speed = 1,
+      },
+      ['Animation'] = { -- keybind = use animation
+          Lay = false,
+          LayKey = Enum.KeyCode.T,
+          Greet = true,
+          GreetKey = Enum.KeyCode.G,
+          Speed = false,
+          SpeedKey = Enum.KeyCode.N,
+          Sturdy = false,
+          SturdyKey = Enum.KeyCode.H,
+          Griddy = false,
+          GriddyKey = Enum.KeyCode.G,
+      },
+      ['Chat'] = {
+          Enabled = true, --  example !fov 120
+          SilentAim_Fov_Size = '!fov',
+          SilentAim_Prediction = '!Prediction',
+          CamLock_fov_Size = '/fov',
+          CamLock_Smoothness = '/Smoothness',
+          CamLock_PreDiction = '/ped',
+      },
+  },
+}
+
+
+local Games = {
+    [2788229376] = {Name = "Da Hood", Argument = "UpdateMousePos", Remote = "MainEvent", BodyEffects = "K.O",},
+    [9825515356] = {Name = "Hood Customs", Argument = "GetMousePos", Remote = "MainEvent"},
+    [5602055394] = {Name = "Hood Modded", Argument = "MousePos", Remote = "Bullets"},
+    [9183932460] = {Name = "Untitled Hood", Argument = "UpdateMousePos", Remote = ".gg/untitledhood"},
+    [14412355918] = {Name = "Da Downhill", Argument = "MOUSE", Remote = "MAINEVENT"},
+    [14412601883] = {Name = "Hood Bank", Argument = "MOUSE", Remote = "MAINEVENT"},
+    [14412436145] = {Name = "Da Uphill", Argument = "MOUSE", Remote = "MAINEVENT"},
+    [14487637618] = {Name = "Da Hood Bot Aim Trainer", Argument = "MOUSE", Remote = "MAINEVENT"},
+    [11143225577] = {Name = "1v1 Hood Aim Trainer", Argument = "UpdateMousePos", Remote = "MainEvent"},
+    [14413712255] = {Name = "Hood Aim", Argument = "MOUSE", Remote = "MAINEVENT"},
+    [14472848239] = {Name = "Moon Hood", Argument = "MoonUpdateMousePos", Remote = "MainEvent"},
+}
+
+
+local VirtualInputManager = game:GetService("VirtualInputManager")
+  
+if getgenv().Looten.StartUP.UnlockFPS then
+    setfpscap(999)
+end
+
+if getgenv().Looten.StartUP.UWP_Optimize then
+    VirtualInputManager:SendKeyEvent(true, "F9", 0, game) wait() VirtualInputManager:SendKeyEvent(false, "F9", 0, game)
+
+    game.DescendantAdded:Connect(function(descendant)
+        if descendant.Name == "MainView" and descendant.Parent.Name == "DevConsoleUI" then
+            task.wait()
+            local Descendant = descendant.Parent.Parent.Parent
+            Descendant.Enabled = false;
+        end
+    end)
+
+    coroutine.resume(coroutine.create(function()
+        while task.wait() do 
+            pcall(function()
+                if not game:GetService("CoreGui"):FindFirstChild("DevConsoleUI", true):FindFirstChild("MainView") then
+                    VirtualInputManager:SendKeyEvent(true, "F9", 0, game)
+                    wait()
+                    VirtualInputManager:SendKeyEvent(false, "F9", 0, game)
+                end
+            end)
+        end
+    end))
+end
+
+-- // Vars
+
+local req =  (syn and syn.request or request);
+
+getgenv().AGV                      = 0.5
+getgenv().WAGA                     = -20
+getgenv().DD                       = true
+getgenv().DV                       = 86
+getgenv().DUG                      = true
+getgenv().UD                       = -30
+getgenv().DC                       = true
+getgenv().FMS                      = Enum.EasingStyle.Elastic
+getgenv().SMS                      = Enum.EasingStyle.Sine
+getgenv().DOC                      = false
+
+local HHAAHAHAHHAHAHAHAHAHHAHAH    = game:GetService("RunService")
+local AHAHAHAHHAAHAHAHAHA          = getgenv().Looten.CamLock.Smoothness.Smoothness
+local Players                      = game:GetService("Players")
+local AHAHAHAHAHAHHAHAHHA          = nil
+local AHAHAHAHAHAHAHAHAAA          = nil
+local AHAHAHAHAHAHHAHAHAH          = false
+local AHAHAHAHAHAHAHAHAAH          = false
+local AHAHHAAAHAHHAAHHAHA          = false
+local AHAHAHAHAHAAHAHAHAH          = CFrame.new()
+local AHHAAHAHAHAHAHAAAAH          = game:GetService("GuiService")
+local AHAHAHAHAHAHAHAAHAH          = getgenv().Looten.Adjustment.TriggerBot.Delay
+local Client                       = game:GetService("Players").LocalPlayer
+local AHAHAHAHAAHHAAHAHAHA         = false
+local DU                           = false
+local AHAHAAHAHAHHHAHAHAHA         = getgenv().Looten.CamLock.Shake.DirectionX
+local AHAHAAHAHHHAHAHAHAHA         = getgenv().Looten.CamLock.Shake.DirectionY
+local AHAHAAHAAAAAAHAHAHAA         = getgenv().Looten.CamLock.Shake.DirectionZ
+local Camera                       = game:GetService("Workspace").CurrentCamera
+local Mouse                        = game:GetService("Players").LocalPlayer:GetMouse()
+local HAHAAHAHAHAHAHHAAH           = 0.05
+local AHAHAHAHAHAHAHAHAHAH         = tick()
+local AAAHAHAAHAHAHAAHAHAHAH       = 0.12
+local AHHAHAAHAHAHAHHAHAH          = tick()
+local AHAHAHAHAAHAHAHAAH           = game:GetService("UserInputService")
+
+local FKWPOAKFAPOAWKFPOFWKAFPOAWFK        = Drawing.new("Circle")
+FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Color        = Color3.new(1, 1, 1)
+FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Thickness    = 1
+FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Color        = Color3.fromRGB(255, 0, 0)
+FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Filled       = false
+FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Transparency = 1
+
+local FWAKFAPFKWPAOFKAWFPAP               = Drawing.new("Circle")
+FWAKFAPFKWPAOFKAWFPAP.Color               = Color3.fromRGB(255, 0, 0)
+FWAKFAPFKWPAOFKAWFPAP.Thickness           = 1
+FWAKFAPFKWPAOFKAWFPAP.Filled              = false
+FWAKFAPFKWPAOFKAWFPAP.Transparency        = 1
+
+local FKAOIFAIKOFAWIOGFAWJNGANGAOWIGAOG = function()
+  if (not FKWPOAKFAPOAWKFPOFWKAFPOAWFK and not FWAKFAPFKWPAOFKAWFPAP) then
+      return FKWPOAKFAPOAWKFPOFWKAFPOAWFK and FWAKFAPFKWPAOFKAWFPAP
+  end
+  FWAKFAPFKWPAOFKAWFPAP.Visible            = getgenv().Looten.Fov.CamLock.Show
+  FWAKFAPFKWPAOFKAWFPAP.Radius             = getgenv().Looten.Fov.CamLock.Radius * 3
+  FWAKFAPFKWPAOFKAWFPAP.Position           = Vector2.new(Mouse.X, Mouse.Y + (AHHAAHAHAHAHAHAAAAH:GetGuiInset().Y))
+  FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Visible     = getgenv().Looten.Fov.SilentAim.Show
+  FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Position    = Vector2.new(Mouse.X, Mouse.Y + (AHHAAHAHAHAHAHAAAAH:GetGuiInset().Y))
+  FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Radius      = getgenv().Looten.Fov.SilentAim.Radius * 3
+  return FKWPOAKFAPOAWKFPOFWKAFPOAWFK and FWAKFAPFKWPAOFKAWFPAP
+end
+
+local FWAKOIIIIIIIIIIIfawfwafawf = function(plr)
+  if
+      plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and
+          plr.Character:FindFirstChild("Humanoid") ~= nil and
+          plr.Character:FindFirstChild("Head") ~= nil
+   then
+      return true
+  end
+  return false
+end
+
+local FWAIUOJJJJJJJJJJJJJJJJJJ = function(Object)
+  local FWAIUOJJJJJJJJJJJJJJJJJJ = Camera:WorldToScreenPoint(Object.Position)
+  return FWAIUOJJJJJJJJJJJJJJJJJJ
+end
+
+local GJNAGJIEAGNAEGIXDXD = function(Part, PartDescendant)
+  local Character = Client.Character or Client.CharacterAdded.Wait(Client.CharacterAdded)
+  local Origin = Camera.CFrame.Position
+  local _, OnScreen = Camera.WorldToViewportPoint(Camera, Part.Position)
+
+  if (OnScreen) then
+      local raycastParams = RaycastParams.new()
+      raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+      raycastParams.FilterDescendantsInstances = {Character, Camera}
+
+      local Result = Workspace.Raycast(Workspace, Origin, Part.Position - Origin, raycastParams)
+
+      if (Result) then
+          local PartHit = Result.Instance
+          local Visible = (not PartHit or Instance.new("Part").IsDescendantOf(PartHit, PartDescendant))
+
+          return Visible
+      end
+  end
+  return false
+end
+
+local FWAINFFANWFNIFINFAINFFJIN = function(Object)
+  if string.find(Object.Name, "Gun") then
+      return
+  end
+  if table.find({"Part", "MeshPart", "BasePart"}, Object.ClassName) then
+      return true
+  end
+end
+
+local WOIPAPORIAWPRIWRPAOFJWOIA = function(character)
+  local ClosestDistance = 1 / 0
+  local BodyPart = nil
+
+  if (character and character:GetChildren()) then
+      for _, x in next, character:GetChildren() do
+          if FWAINFFANWFNIFINFAINFFJIN(x) and FWAIUOJJJJJJJJJJJJJJJJJJ(x) then
+              local Position = Camera:WorldToScreenPoint(x.Position)
+              local Distance = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Position.X, Position.Y)).Magnitude
+              if (Distance < ClosestDistance) then
+                  ClosestDistance = Distance
+                  BodyPart = x
+              end
+          end
+      end
+  end
+  return BodyPart
+end
+
+local IGNAGOIAWGAWGAUDIHNADAI = function(Part)
+  if Part ~= nil then
+      local Hit, Half = Mouse.Hit.Position, Part.Size * 0.25
+      local Transform = Part.CFrame:PointToObjectSpace(Mouse.Hit.Position)
+      local NearestPosition =
+          Part.CFrame *
+          Vector3.new(
+              math.clamp(Transform.X, -Half.X, Half.X),
+              math.clamp(Transform.Y, -Half.Y, Half.Y),
+              math.clamp(Transform.Z, -Half.Z, Half.Z)
+          )
+      return NearestPosition
+  end
+  return nil
+end
+
+local AHAHAHAHAHAHAAHAHH = function(percentage)
+  percentage = math.floor(percentage)
+
+  local chance = math.floor(Random.new().NextNumber(Random.new(), 0, 1) * 100) / 100
+
+  return chance <= percentage / 100
+end
+
+HHAAHAHAHHAHAHAHAHAHHAHAH.Heartbeat:Connect(FKAOIFAIKOFAWIOGFAWJNGANGAOWIGAOG)
+
+local AHAHHAHAHHHHAHAHAHAHAHAAHH = function()
+  local Target, Closest = nil, 1 / 0
+  local HitChance = AHAHAHAHAHAHAAHAHH(getgenv().Looten.Silent.Normal.HitChance)
+  local thresholdDistance = 100
+
+  if not HitChance then
+      Target = nil
+      return Target
+  end
+
+  for _, v in pairs(Players:GetPlayers()) do
+      if (v.Character and v ~= Client and v.Character:FindFirstChild("HumanoidRootPart")) then
+          if
+              Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position) and
+                  GJNAGJIEAGNAEGIXDXD(v.Character.HumanoidRootPart, v.Character)
+           then
+              local Position = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+              local Distance = ((Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Position.X, Position.Y)).Magnitude) * 0.6
+              if
+                  (Distance < Closest and FKWPOAKFAPOAWKFPOFWKAFPOAWFK.Radius > Distance and
+                      Distance < thresholdDistance)
+               then
+                  Closest = Distance
+                  Target = v
+              end
+          end
+      end
+  end
+
+  if
+      getgenv().Looten.Adjustment.Checks.Knocked_Check == true and FWAKOIIIIIIIIIIIfawfwafawf(Target) and
+          Target.Character:FindFirstChild("BodyEffects")
+   then
+      local currentTime = tick()
+      local elapsedTime = currentTime - AHAHAHAHAHAHAHAHAHAH
+      if elapsedTime >= HAHAAHAHAHAHAHHAAH then
+          AHAHAHAHAHAHAHAHAHAH = currentTime
+      end
+      local KOd = Target.Character.BodyEffects:FindFirstChild("K.O").Value
+      local Grabbed = Target.Character:FindFirstChild("GRABBING_CONSTRAINT") ~= nil
+      if KOd or Grabbed then
+          AHAHAHAHAHAHHAHAHHA = nil
+          return
+      end
+  end
+  if getgenv().DC == true and FWAKOIIIIIIIIIIIfawfwafawf(Target) then
+      local currentTime = tick()
+      local elapsedTime = currentTime - AHAHAHAHAHAHAHAHAHAH
+      if elapsedTime >= HAHAAHAHAHAHAHHAAH then
+          AHAHAHAHAHAHAHAHAHAH = currentTime
+      end
+      if Target.Character.Humanoid.health < 4 then
+          AHAHAHAHAHAHHAHAHHA = nil
+          return
+      end
+  end
+  if getgenv().Looten.Adjustment.Checks.Wall_Check == true and FWAKOIIIIIIIIIIIfawfwafawf(Target) then
+      local currentTime = tick()
+      local elapsedTime = currentTime - AHAHAHAHAHAHAHAHAHAH
+      if elapsedTime >= HAHAAHAHAHAHAHHAAH then
+          AHAHAHAHAHAHAHAHAHAH = currentTime
+      end
+      if Target.Character.Head.Transparency == 1 then
+          AHAHAHAHAHAHHAHAHHA = nil
+          return
+      end
+  end
+  if
+      getgenv().Looten.Adjustment.Checks.Crew_Check == true and FWAKOIIIIIIIIIIIfawfwafawf(Target) and
+          FWAKOIIIIIIIIIIIfawfwafawf(Client) and
+          Target:FindFirstChild("DataFolder") and
+          Target.DataFolder:FindFirstChild("Information") and
+          Target.DataFolder.Information:FindFirstChild("Crew") and
+          Client:FindFirstChild("DataFolder") and
+          Client.DataFolder:FindFirstChild("Information") and
+          Client.DataFolder.Information:FindFirstChild("Crew")
+   then
+      local currentTime = tick()
+      local elapsedTime = currentTime - AHAHAHAHAHAHAHAHAHAH
+      if elapsedTime >= HAHAAHAHAHAHAHHAAH then
+          AHAHAHAHAHAHAHAHAHAH = currentTime
+      end
+      if
+          Client.DataFolder.Information:FindFirstChild("Crew").Value ~= nil and
+              Target.DataFolder.Information:FindFirstChild("Crew").Value ~= nil and
+              Target.DataFolder.Information:FindFirstChild("Crew").Value ~= "" and
+              Client.DataFolder.Information:FindFirstChild("Crew").Value ~= "" and
+              Target.DataFolder.Information:FindFirstChild("Crew").Value ==
+                  Client.DataFolder.Information:FindFirstChild("Crew").Value
+       then
+          AHAHAHAHAHAHHAHAHHA = nil
+          return
+      end
+  end
+  return Target
+end
+
+local AHAHAHAHAHAHAHHAAHAHAHAH = function()
+  local Target, Closest = nil, 1 / 0
+
+  for _, v in pairs(Players:GetPlayers()) do
+      if (v.Character and v ~= Client and v.Character:FindFirstChild("HumanoidRootPart")) then
+          if getgenv().Looten.Fov.CamLock.Use_Radius then
+              local Position, OnScreen = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+              local Distance = (Vector2.new(Position.X, Position.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+              if (FWAKFAPFKWPAOFKAWFPAP.Radius > Distance and Distance < Closest and OnScreen) then
+                  Closest = Distance
+                  Target = v
+              end
+          elseif getgenv().Looten.Adjustment.Checks.Wall_Check then
+              local Position, OnScreen = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+              local Distance = (Vector2.new(Position.X, Position.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+
+              if (Distance < Closest and OnScreen) then
+                  Closest = Distance
+                  Target = v
+              end
+          else
+              local Position, OnScreen = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+              local Distance = (Vector2.new(Position.X, Position.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+
+              if (Distance < Closest and OnScreen) then
+                  Closest = Distance
+                  Target = v
+              end
+          end
+      end
+  end
+  if Target ~= nil and getgenv().Looten.Adjustment.Checks.Wall_Check == true then
+      if Target.Character.Head.Transparency == 1 then
+          Target = nil
+          return Target
+      end
+  end
+  return Target
+end
+
+Mouse.KeyDown:Connect(
+  function(Key, t)
+      local Keybind = getgenv().Looten.CamLock.KeyBind.KeyBind:lower()
+      if not t and (Key == Keybind) then
+          if
+              getgenv().Looten.CamLock.Normal.Enabled  == true and
+                  getgenv().Looten.CamLock.KeyBind.Mode == "KeyBind"
+           then
+              if getgenv().Looten.CamLock.KeyBind.Hold == true then
+                  AHAHAHAHAAHAHAHAAH.MouseIconEnabled = true
+                  AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH = true
+                  AHAHAHAHAHAHAHAHAAA = AHAHAHAHAHAHAHHAAHAHAHAH()
+              else
+                  AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH = not AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH
+                  if AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH then
+                      AHAHAHAHAHAHAHAHAAA = AHAHAHAHAHAHAHHAAHAHAHAH()
+                  else
+                      if AHAHAHAHAHAHAHAHAAA ~= nil then
+                          AHAHAHAHAHAHAHAHAAA = nil
+                          AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH = false
+                      end
+                  end
+              end
+          end
+      end
+  end
+)
+
+Mouse.KeyUp:Connect(
+  function(Key, t)
+      local Keybind = getgenv().Looten.CamLock.KeyBind.KeyBind:lower()
+      if not t and (Key == Keybind) then
+          if
+              getgenv().Looten.CamLock.Normal.Enabled == true and
+                  getgenv().Looten.CamLock.KeyBind.Hold == true and
+                  getgenv().Looten.CamLock.KeyBind.Mode == "KeyBind"
+           then
+              AHAHAHAHAAHAHAHAAH.MouseIconEnabled = true
+              AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH = false
+              AHAHAHAHAHAHAHAHAAA = nil
+          end
+      end
+  end
+)
+
+AHAHAHAHAAHAHAHAAH.InputBegan:Connect(
+  function(input, t)
+      if not t and input.UserInputType == getgenv().Looten.CamLock.KeyBind.MouseBind then
+          if
+              getgenv().Looten.CamLock.Normal.Enabled == true and
+                  getgenv().Looten.CamLock.KeyBind.Mode == "Mouse"
+           then
+              if getgenv().Looten.CamLock.KeyBind.Hold == true then
+                  AHAHAHAHAAHAHAHAAH.MouseIconEnabled = true
+                  AHAHAHAHAHHAHAHAHAHAHAAHHAHAHAHAHHAHAHAAHAHAHAHAHAHAHH = true
+                  AHAHAHAHAHAHAHAHAAA = A
